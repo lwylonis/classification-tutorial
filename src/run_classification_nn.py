@@ -13,6 +13,9 @@ parser.add_argument('--dataset',
 # Checkpoint settings
 parser.add_argument('--checkpoint_path',
     type=str, required=True, help='Path to save checkpoint file')
+parser.add_argument('--output_path',
+    type=str, required=True, help='Path to save output')
+
 
 # Hardware settings
 parser.add_argument('--device',

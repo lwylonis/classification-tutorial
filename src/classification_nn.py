@@ -84,7 +84,7 @@ def train(net,
 
     return net
 
-def evaluate(net, dataloader, class_names, device):
+def evaluate(net, dataloader, class_names, output_path, device):
     '''
     Evaluates the network on a dataset
 
@@ -96,6 +96,8 @@ def evaluate(net, dataloader, class_names, device):
             dataloader for training data
         class_names : list[str]
             list of class names to be used in plot
+        output_path: str
+            path to save output visualization
         device : str
             device to run on
     '''
