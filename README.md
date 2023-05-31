@@ -17,7 +17,7 @@ src/classification_nn.py
 src/networks.py
 src/run_classification_nn.py
 src/train_classification_nn.py
-src/utils.py
+src/log_utils.py
 ```
 
 ### Tasks
@@ -31,4 +31,38 @@ src/utils.py
 - Report your scores below (you should get a number higher than 51%) i.e.
 ```
 Mean accuracy over 10000 images: 52.840%
+```
+
+## Tutorial - Training and running a convolutional neural network (CNN)
+### Learning Objectives
+- Work with git on Google Colab
+- Write a ResNet18 encoder network
+- Write a VGGNet11 encoder network
+- Write a ClassificationModel class that can initatiate different types of CNN
+- Implement forward, compute_loss, saving, restoring, etc. functions for ClassificationModel
+- Implement Tensorboard logging
+- Implementing training loop
+- Implementing evaluation (run/inference) loop
+- Identify and import loss function
+- Identify and import evaluation metrics
+- Coding practices, documentation
+
+Files involved:
+```
+src/classification_cnn.py
+src/classification_model.py
+src/net_utils.py
+src/networks.py
+src/run_classification_cnn.py
+src/train_classification_cnn.py
+```
+
+### Tasks
+- Develop on your local machine and push to your branch in remote
+- Implement all TODOs in the files specified above
+- Commits should be pushed to your remote branch on github
+- Checkout your branch on Google Colab, fetch and rebase, and test your code using run commands (see `bash` folder)
+- Report your scores below (you should get a number higher than 80%) i.e.
+```
+Mean accuracy over 10000 images: 80.210%
 ```

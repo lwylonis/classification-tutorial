@@ -10,6 +10,10 @@ parser.add_argument('--n_batch',
 parser.add_argument('--dataset',
     type=str, required=True, help='Dataset for training: cifar10, mnist')
 
+# Network settings
+parser.add_argument('--encoder_type',
+    type=str, required=True, help='Encoder type to build: vggnet11, resnet18')
+
 # Training settings
 parser.add_argument('--n_epoch',
     type=int, required=True, help='Number of passes through the full training dataset')
@@ -22,7 +26,7 @@ parser.add_argument('--learning_rate_period',
 
 # Checkpoint settings
 parser.add_argument('--checkpoint_path',
-    type=str, required=True, help='Path to save checkpoint file ')
+    type=str, required=True, help='Path directory to save checkpoints and Tensorboard summaries')
 
 # Hardware settings
 parser.add_argument('--device',
@@ -61,7 +65,7 @@ if __name__ == '__main__':
     n_input_feature = None
 
     # TODO: Instantiate network
-    net = None
+    model = None
 
     # TODO: Setup learning rate SGD optimizer and step function scheduler
     # https://pytorch.org/docs/stable/optim.html?#torch.optim.SGD
@@ -73,6 +77,3 @@ if __name__ == '__main__':
     # TODO: Set network to training mode
 
     # TODO: Train network
-    net = None
-
-    # TODO: Save weights into checkpoint

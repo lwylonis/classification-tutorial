@@ -9,7 +9,7 @@ def config_plot():
     plt.box(False)
     plt.axis('off')
 
-def plot_images(images, n_row, n_col, subplot_titles, output_path, dpi=200, cmap=None):
+def plot_images(images, n_row, n_col, subplot_titles, output_path=None, dpi=200, cmap=None):
     '''
     Plot images in a grid
 
@@ -49,5 +49,8 @@ def plot_images(images, n_row, n_col, subplot_titles, output_path, dpi=200, cmap
 
             config_plot()
 
-    fig.subplots_adjust(wspace=0, hspace=0.5)
-    plt.savefig(output_path)
+    if output_path is not None:
+        fig.subplots_adjust(wspace=0, hspace=0.5)
+        plt.savefig(output_path)
+    else:
+        return fig

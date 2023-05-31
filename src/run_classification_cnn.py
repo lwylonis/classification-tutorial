@@ -10,6 +10,10 @@ parser.add_argument('--n_batch',
 parser.add_argument('--dataset',
     type=str, required=True, help='Dataset for training: cifar10, mnist')
 
+# Network settings
+parser.add_argument('--encoder_type',
+    type=str, required=True, help='Encoder type to build: vggnet11, resnet18')
+
 # Checkpoint settings
 parser.add_argument('--checkpoint_path',
     type=str, required=True, help='Path to save checkpoint file')
@@ -43,11 +47,8 @@ if __name__ == '__main__':
     '''
     Set up model
     '''
-    # TODO: Compute number of input features based on args.dataset variable
-    n_input_feature = None
-
     # TODO: Instantiate network
-    net = None
+    model = None
 
     '''
     Restore weights and evaluate network

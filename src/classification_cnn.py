@@ -1,21 +1,24 @@
-import torch, torchvision
+import torch, torchvision, os
 import numpy as np
+from torch.utils.tensorboard import SummaryWriter
+
 import log_utils
 
 
-def train(net,
+def train(model,
           dataloader,
           n_epoch,
           optimizer,
           learning_rate_decay,
           learning_rate_decay_period,
+          checkpoint_path,
           device):
     '''
     Trains the network using a learning rate scheduler
 
     Arg(s):
-        net : torch.nn.Module
-            neural network
+        model : ClassificationModel
+            instance of the classification model
         dataloader : torch.utils.data.DataLoader
             # https://pytorch.org/docs/stable/data.html
             dataloader for training data
@@ -28,6 +31,8 @@ def train(net,
             rate of learning rate decay
         learning_rate_decay_period : int
             period to reduce learning rate based on decay e.g. every 2 epoch
+        checkpoint_path : str
+            path to save weights and Tensorboard summary
         device : str
             device to run on
     Returns:
@@ -37,12 +42,17 @@ def train(net,
     device = 'cuda' if device == 'gpu' or device == 'cuda' else 'cpu'
     device = torch.device(device)
 
-    # TODO: Move model to device using 'to(...)' function
-    net = None
+    if not os.path.exists(checkpoint_path):
+        os.makedirs(checkpoint_path)
 
-    # TODO: Define cross entropy loss
-    # https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
-    loss_func = None
+    # Set up checkpoint and event paths
+    model_checkpoint_path = os.path.join(checkpoint_path, 'model-{}.pth')
+    event_path = os.path.join(checkpoint_path, 'events')
+
+    train_summary_writer = SummaryWriter(event_path + '-train')
+
+    # TODO: Move model to device using 'to(...)' function
+    model = None
 
     for epoch in range(n_epoch):
 
@@ -61,16 +71,13 @@ def train(net,
             images = None
             labels = None
 
-            # TODO: Vectorize images from (N, C, H, W) to (N, d)
-            images = None
-
             # TODO: Forward through the network
             outputs = None
 
             # TODO: Clear gradients so we don't accumlate them from previous batches
 
             # TODO: Compute loss function
-            loss = None
+            loss, loss_info = None, None
 
             # TODO: Update parameters by backpropagation
 
@@ -82,15 +89,17 @@ def train(net,
         # Log average loss over the epoch
         print('Epoch={}/{}  Loss: {:.3f}'.format(epoch + 1, n_epoch, mean_loss))
 
-    return net
+        # TODO: Save checkpoint after each epoch by using string format to insert epoch number to filename
 
-def evaluate(net, dataloader, class_names, output_path, device):
+    return model
+
+def evaluate(model, dataloader, class_names, output_path, device):
     '''
     Evaluates the network on a dataset
 
     Arg(s):
-        net : torch.nn.Module
-            neural network
+        model : ClassificationModel
+            instance of the classification model
         dataloader : torch.utils.data.DataLoader
             # https://pytorch.org/docs/stable/data.html
             dataloader for training data
@@ -106,7 +115,7 @@ def evaluate(net, dataloader, class_names, output_path, device):
     device = torch.device(device)
 
     # TODO: Move model to device
-    net = None
+    model = None
 
     n_correct = 0
     n_sample = 0
@@ -119,9 +128,6 @@ def evaluate(net, dataloader, class_names, output_path, device):
             # TODO: Move images and labels to device
             images = None
             labels = None
-
-            # TODO: Vectorize images from (N, H, W, C) to (N, d)
-            images = None
 
             # TODO: Forward through the network
             outputs = None
@@ -170,8 +176,6 @@ def evaluate(net, dataloader, class_names, output_path, device):
 
         # TODO: Append images from start to end to image display array
 
-
         # TODO: Append text of 'output={}\nlabel={}' substituted with output and label to subplot titles
-
 
     # TODO: Plot images with class names and corresponding groundtruth label in a 5 by 5 grid
