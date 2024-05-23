@@ -28,9 +28,10 @@ src/log_utils.py
 - Implement all TODOs in the files specified above
 - Commits should be pushed to your remote branch on github
 - Checkout your branch on Google Colab, fetch and rebase, and test your code using run commands (see `bash` folder)
-- Report your scores below (you should get a number higher than 51%) i.e.
+- Report your scores below (you should get a number higher than 90% on MNIST and 51% on CIFAR-10) i.e.
 ```
-Mean accuracy over 10000 images: 52.840%
+Mean accuracy over 10000 images: 91.370% (MNIST)
+Mean accuracy over 10000 images: 52.840% (CIFAR-10)
 ```
 
 ## Tutorial - Training and running a convolutional neural network (CNN)
@@ -62,7 +63,11 @@ src/train_classification_cnn.py
 - Implement all TODOs in the files specified above
 - Commits should be pushed to your remote branch on github
 - Checkout your branch on Google Colab, fetch and rebase, and test your code using run commands (see `bash` folder)
-- Report your scores below (you should get a number higher than 80%) i.e.
+- Report your scores below (you should get a number higher than 98% on MNIST and 80% on CIFAR-10) i.e.
 ```
-Mean accuracy over 10000 images: 80.210%
+Mean accuracy over 10000 images: 98.240% (VGG-11 on MNIST)
+Mean accuracy over 10000 images: 80.210% (VGG-11 on CIFAR-10)
+
+Mean accuracy over 10000 images: 99.270% (ResNet-18 on MNIST)
+Mean accuracy over 10000 images: 81.340% (ResNet-18 on CIFAR-10)
 ```
