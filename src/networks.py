@@ -22,14 +22,14 @@ class NeuralNetwork(torch.nn.Module):
         # https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html
 
         # TODO: Instantiate 5 fully connected layers and choose number of neurons i.e. 512
-        self.fully_connected_layer1 = None
-        self.fully_connected_layer2 = None
-        self.fully_connected_layer3 = None
-        self.fully_connected_layer4 = None
-        self.fully_connected_layer5 = None
+        self.fully_connected_layer1 = torch.nn.Linear(n_input_feature, 512)
+        self.fully_connected_layer2 = torch.nn.Linear(512, 512)
+        self.fully_connected_layer3 = torch.nn.Linear(512, 512)
+        self.fully_connected_layer4 = torch.nn.Linear(512, 512)
+        self.fully_connected_layer5 = torch.nn.Linear(512, 512)
 
         # TODO: Define output layer
-        self.output = None
+        self.output = torch.nn.Linear(512, n_output)
 
     def forward(self, x):
         '''
@@ -44,13 +44,13 @@ class NeuralNetwork(torch.nn.Module):
         '''
 
         # TODO: Implement forward function
-        output_fc1 = None
-        output_fc2 = None
-        output_fc3 = None
-        output_fc4 = None
-        output_fc5 = None
+        output_fc1 = torch.relu(self.fully_connected_layer1(x))
+        output_fc2 = torch.relu(self.fully_connected_layer2(output_fc1))
+        output_fc3 = torch.relu(self.fully_connected_layer3(output_fc2))
+        output_fc4 = torch.relu(self.fully_connected_layer4(output_fc3))
+        output_fc5 = torch.relu(self.fully_connected_layer5(output_fc4))
 
-        output_logits = None
+        output_logits = self.output(output_fc5)
 
         return output_logits
 

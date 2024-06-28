@@ -38,14 +38,14 @@ def plot_images(images, n_row, n_col, subplot_titles, output_path=None, dpi=200,
         for col_idx in range(n_col):
 
             # TODO: Compute subplot index based on row and column indices
-            subplot_idx = None
+            subplot_idx = row_idx * n_col + col_idx + 1
 
             # TODO: Create axis object with n_row, n_col for current subplot
-            ax = None
+            ax = fig.add_subplot(n_row, n_col, subplot_idx)
 
             # TODO: Plot the image with provided color
             ax.set_title(subplot_titles[row_idx][col_idx], fontsize=5)
-            ax.imshow()
+            ax.imshow(images[row_idx][col_idx], cmap=cmap)
 
             config_plot()
 
