@@ -1,6 +1,8 @@
 import os, argparse
 import torch, torchvision
 
+from torch.utils.data import DataLoader
+import classification_model, classification_cnn
 
 parser = argparse.ArgumentParser()
 
@@ -34,28 +36,42 @@ if __name__ == '__main__':
     '''
     # TODO: Create transformations to apply to data during testing
     # https://pytorch.org/docs/stable/torchvision/transforms.html
-    transforms_test = None
+    transforms_test = torchvision.transforms.Compose([
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Normalize((0.5,), (0.5,))
+    ])
 
     # TODO: Construct testing dataset based on args.dataset variable
-    dataset_test = None
+    if args.dataset == 'cifar10':
+        dataset_test = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transforms_test)
+        class_names = dataset_test.classes
+    elif args.dataset == 'mnist':
+        dataset_test = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transforms_test)
+        class_names = list(range(10))  # MNIST has digits from 0 to 9
+    else:
+        raise ValueError('Unsupported dataset: {}'.format(args.dataset))
 
     # TODO: Setup a dataloader (iterator) to fetch from the testing set using
     # torch.utils.data.DataLoader and set shuffle=False, drop_last=False, num_workers=2
     # Set batch_size to 25
-    dataloader_test = None
+    dataloader_test = DataLoader(dataset_test, batch_size=25, shuffle=False, drop_last=False, num_workers=2)
 
     '''
     Set up model
     '''
     # TODO: Instantiate network
-    model = None
+    model = classification_model.ClassificationModel(encoder_type=args.encoder_type, device=args.device)
 
     '''
     Restore weights and evaluate network
     '''
     # TODO: Load network from checkpoint
-    checkpoint = None
+    checkpoint = torch.load(args.checkpoint_path)
+    model.load_state_dict(checkpoint['model_state_dict'])
 
     # TODO: Set network to evaluation mode
+    model.eval()
 
     # TODO: Evaluate network on testing set
+    mean_accuracy = classification_cnn.evaluate(model, dataloader_test, class_names, args.output_path, args.device)
+    print(f'Mean accuracy: {mean_accuracy:.2f}%')

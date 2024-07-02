@@ -3,12 +3,12 @@
 export CUDA_VISIBLE_DEVICES=0
 
 python src/train_classification_cnn.py \
---n_batch # TODO: Fill in hyperparameter \
---dataset # TODO: Fill in hyperparameter \
---encoder_type # TODO: Fill in hyperparameter \
---n_epoch # TODO: Fill in hyperparameter \
---learning_rate # TODO: Fill in hyperparameter \
---learning_rate_decay # TODO: Fill in hyperparameter \
---learning_rate_period # TODO: Fill in hyperparameter \
---checkpoint_path # TODO: Fill in hyperparameter \
---device # TODO: Fill in hyperparameter \
+--n_batch 24 \
+--dataset mnist \
+--encoder_type vggnet11 \
+--n_epoch 50 \
+--learning_rate 1e-3 \
+--learning_rate_decay 3e-1 \
+--learning_rate_period 10 \
+--checkpoint_path cnn_mnist_cifar10_t1 \
+--device cpu \

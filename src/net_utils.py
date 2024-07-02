@@ -303,13 +303,40 @@ class ResNetBlock(torch.nn.Module):
         # TODO: Implement ResNet block based on
         # Deep Residual Learning for Image Recognition: https://arxiv.org/pdf/1512.03385.pdf
 
-        self.conv1 = None
+        self.conv1 = torch.nn.Conv2D(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
 
-        self.conv2 = None
+        self.conv2 = torch.nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
 
-        self.conv3 = None
+        if weight_initializer == 'kaiming_normal':
+            torch.nn.init.kaiming_normal_(self.conv1.weight)
+            torch.nn.init.kaiming_normal_(self.conv2.weight)
+        elif weight_initializer == 'xavier_normal':
+            torch.nn.init.xavier_normal_(self.conv1.weight)
+            torch.nn.init.xavier_normal_(self.conv2.weight)
+        elif weight_initializer == 'xavier_uniform':
+            torch.nn.init.xavier_uniform_(self.conv1.weight)
+            torch.nn.init.xavier_uniform_(self.conv2.weight)
+        elif weight_initializer == 'kaiming_uniform':
+            pass
+        else:
+            raise ValueError('Unsupported weight initializer: {}'.format(weight_initializer))
 
-        self.projection = None
+        self.use_projection = stride != 1 or in_channels != out_channels
+        if self.use_projection:
+            self.projection = torch.nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False)
+            if weight_initializer == 'kaiming_normal':
+                torch.nn.init.kaiming_normal_(self.projection.weight)
+            elif weight_initializer == 'xavier_normal':
+                torch.nn.init.xavier_normal_(self.projection.weight)
+            elif weight_initializer == 'xavier_uniform':
+                torch.nn.init.xavier_uniform_(self.projection.weight)
+            elif weight_initializer == 'kaiming_uniform':
+                pass
+            else:
+                raise ValueError('Unsupported weight initializer: {}'.format(weight_initializer))
+
+        self.norm1 = torch.nn.BatchNorm2d(out_channels)
+        self.norm2 = torch.nn.BatchNorm2d(out_channels)
 
     def forward(self, x):
         '''
@@ -323,6 +350,20 @@ class ResNetBlock(torch.nn.Module):
         '''
 
         # TODO: Perform 2 convolutions
+        residual = x
+
+        out = self.conv1(x)
+        out = self.norm1(out)
+        out = self.activation_func(out)
+        out = self.conv2(out)
+        out = self.norm2(out)
+
+        if self.use_projection:
+            residual = self.projection(x)
+
+        out += residual
+        out = self.activation_func(out)
+
 
         # TODO: Perform projection if (1) shape does not match (2) channels do not match
 
@@ -368,6 +409,15 @@ class VGGNetBlock(torch.nn.Module):
 
         # TODO: Implement VGGNet architecture based on
         # Very Deep Convolutional Networks for Large-Scale Image Recognition: https://arxiv.org/pdf/1409.1556.pdf
+
+        for _ in range(n_convolution):
+            layers.append(torch.nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False))
+            if use_batch_norm:
+                layers.append(torch.nn.BatchNorm2d(out_channels))
+            elif use_instance_norm:
+                layers.append(torch.nn.InstanceNorm2d(out_channels))
+            layers.append(activation_func)
+            in_channels = out_channels
 
         self.conv_block = torch.nn.Sequential(*layers)
 

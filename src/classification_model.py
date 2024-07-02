@@ -26,16 +26,21 @@ class ClassificationModel(object):
         # Decoder should use
         # https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html
 
+
+        self.encoder_type = encoder_type
+
         if encoder_type == 'vggnet11':
-            self.encoder = None
-            self.decoder = torch.nn.Sequential(None)
+            self.encoder = networks.VGGNet11Encoder()
+            self.decoder = torch.nn.Sequential()
         elif encoder_type == 'resnet18':
-            self.encoder = None
-            self.decoder = torch.nn.Sequential(None)
+            self.encoder = networks.ResNet18Encoder()
+            self.decoder = torch.nn.Sequential()
         else:
             raise ValueError('Unsupported encoder type: {}'.format(encoder_type))
 
         # TODO: Move encoder and decoder to device
+        self.encoder.to(self.device)
+        self.decoder.to(self.device)
 
     def transform_input(self, images):
         '''
@@ -52,12 +57,17 @@ class ClassificationModel(object):
         # https://arxiv.org/pdf/1409.1556.pdf
         # https://arxiv.org/pdf/1512.03385.pdf
 
-        if self.encoder_type == 'vggnet11':
-            pass
-        elif self.encoder_type == 'resnet18':
-            pass
+        mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
+        std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
 
-        return None
+        images = (images - mean[None, :, None, None]) / std[None, :, None, None]
+
+        # if self.encoder_type == 'vggnet11':
+        #     pass
+        # elif self.encoder_type == 'resnet18':
+        #     pass
+
+        return images
 
     def forward(self, image):
         '''
@@ -71,8 +81,10 @@ class ClassificationModel(object):
         '''
 
         # TODO: Implement forward function
+        features, _ = self.encoder(image)
+        output = self.decoder(features)
 
-        return None
+        return output
 
     def compute_loss(self, output, label):
         '''
@@ -88,8 +100,8 @@ class ClassificationModel(object):
             dict[str, float] : dictionary of loss related tensors
         '''
 
-        # TODO: Compute cross entropy loss
-        loss = None
+        criterion = torch.nn.CrossEntropyLoss()
+        loss = criterion(output, label)
 
         loss_info = {
             'loss' : loss
@@ -105,21 +117,22 @@ class ClassificationModel(object):
             list[torch.Tensor[float32]] : list of parameters
         '''
 
-        return None
+        return list(self.encoder.parameters()) + list(self.decoder.parameters())
 
     def train(self):
         '''
         Sets model to training mode
         '''
 
-        pass
+        self.encoder.train()
+        self.decoder.train()
 
     def eval(self):
         '''
         Sets model to evaluation mode
         '''
-
-        pass
+        self.encoder.eval()
+        self.decoder.eval()
 
     def to(self, device):
         '''
@@ -129,6 +142,10 @@ class ClassificationModel(object):
             device : torch.device
                 device to use
         '''
+
+        self.device = device
+        self.encoder.to(device)
+        self.decoder.to(device)
 
         self.device = device
 
@@ -141,6 +158,9 @@ class ClassificationModel(object):
 
         # TODO: Wrap encoder and decoder in
         # https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html
+
+        self.encoder = torch.nn.DataParallel(self.encoder)
+        self.decoder = torch.nn.DataParallel(self.decoder)
 
     def restore_model(self, restore_path, optimizer=None):
         '''
@@ -159,7 +179,15 @@ class ClassificationModel(object):
         # TODO: Restore the weights from checkpoint
         # Encoder and decoder are keyed using 'encoder_state_dict' and 'decoder_state_dict'
         # If optimizer is given, then save its parameters using key 'optimizer_state_dict'
-        pass
+
+        checkpoint = torch.load(restore_path, map_location=self.device)
+        self.encoder.load_state_dict(checkpoint['encoder_state_dict'])
+        self.decoder.load_state_dict(checkpoint['decoder_state_dict'])
+
+        if optimizer is not None:
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
+        return checkpoint['step'], optimizer
 
     def save_model(self, checkpoint_path, step, optimizer=None):
         '''
@@ -177,7 +205,12 @@ class ClassificationModel(object):
         # TODO: Save the weights into checkpoint
         # Encoder and decoder are keyed using 'encoder_state_dict' and 'decoder_state_dict'
         # If optimizer is given, then save its parameters using key 'optimizer_state_dict'
-        pass
+        torch.save({
+            'encoder_state_dict': self.encoder.state_dict(),
+            'decoder_state_dict': self.decoder.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'step': step,
+        }, checkpoint_path)
 
     def log_summary(self,
                     summary_writer,
@@ -212,25 +245,38 @@ class ClassificationModel(object):
 
         with torch.no_grad():
 
-            image_summary = image[0:n_image_per_summary, ...]
 
-            # TODO: Move image_summary to CPU using cpu()
+            image_summary = image[0:n_image_per_summary, ...].cpu().numpy().transpose(0, 2, 3, 1)
+            fig = plt.figure(figsize=(n_image_per_summary, 1))
+            for idx in range(n_image_per_summary):
+                ax = fig.add_subplot(1, n_image_per_summary, idx + 1)
+                ax.imshow(image_summary[idx])
+                ax.axis('off')
 
-            # TODO: Convert image_summary to numpy using numpy() and swap dimensions from NCHW to NHWC
-            n_batch, n_channel, n_height, n_width = image_summary.shape
+            summary_writer.add_figure(f'{tag}_image', fig, global_step=step)
 
-            # TODO: Create plot figure of size n x n using log_utils
+            for name, value in scalars.items():
+                summary_writer.add_scalar(f'{tag}_{name}', value, global_step=step)
 
-            # TODO: Log image summary to Tensorboard with <tag>_image as its summary tag name using
-            # https://pytorch.org/docs/stable/tensorboard.html#torch.utils.tensorboard.writer.SummaryWriter.add_figure
+            # image_summary = image[0:n_image_per_summary, ...]
 
-            plt.tight_layout()
+            # # TODO: Move image_summary to CPU using cpu()
 
-            plt.cla()
-            plt.clf()
-            plt.close()
+            # # TODO: Convert image_summary to numpy using numpy() and swap dimensions from NCHW to NHWC
+            # n_batch, n_channel, n_height, n_width = image_summary.shape
 
-            # TODO: Log scalars to Tensorboard with <tag>_<name> as its summary tag name using
-            # https://pytorch.org/docs/stable/tensorboard.html#torch.utils.tensorboard.writer.SummaryWriter.add_scalar
-            for (name, value) in scalars.items():
-                pass
+            # # TODO: Create plot figure of size n x n using log_utils
+
+            # # TODO: Log image summary to Tensorboard with <tag>_image as its summary tag name using
+            # # https://pytorch.org/docs/stable/tensorboard.html#torch.utils.tensorboard.writer.SummaryWriter.add_figure
+
+            # plt.tight_layout()
+
+            # plt.cla()
+            # plt.clf()
+            # plt.close()
+
+            # # TODO: Log scalars to Tensorboard with <tag>_<name> as its summary tag name using
+            # # https://pytorch.org/docs/stable/tensorboard.html#torch.utils.tensorboard.writer.SummaryWriter.add_scalar
+            # for (name, value) in scalars.items():
+            #     pass
