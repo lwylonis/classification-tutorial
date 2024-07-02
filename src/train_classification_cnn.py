@@ -4,6 +4,7 @@ import torch, torchvision
 from torch.utils.data import DataLoader
 import networks
 import classification_cnn
+import classification_model
 
 
 parser = argparse.ArgumentParser()
@@ -83,7 +84,7 @@ if __name__ == '__main__':
         n_input_feature = 1 * 28 * 28  # MNIST images are 28x28 grayscale
 
     # TODO: Instantiate network
-    model = networks.ClassificationModel(encoder_type=args.encoder_type, n_input_feature=n_input_feature, n_output=n_class, device=args.device)
+    model = classification_model.ClassificationModel(encoder_type=args.encoder_type, n_input_feature=n_input_feature, n_output=n_class, device=args.device)
 
     # TODO: Setup learning rate SGD optimizer and step function scheduler
     # https://pytorch.org/docs/stable/optim.html?#torch.optim.SGD
