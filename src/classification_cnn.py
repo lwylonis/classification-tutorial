@@ -78,7 +78,7 @@ def train(model,
 
             # TODO: Forward through the network
 
-            print("MODEL:", model)
+            #print("MODEL:", model)
 
 
             outputs = model.forward(images)
