@@ -147,7 +147,6 @@ class ClassificationModel(object):
         self.encoder.to(device)
         self.decoder.to(device)
 
-        self.device = device
 
         # TODO: Move encoder and decoder to device
 
