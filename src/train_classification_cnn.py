@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     model.train()
 
+    print("MODEL:")
     print(model)
 
     # TODO: Train network
