@@ -212,12 +212,16 @@ class ClassificationModel(object):
         # TODO: Save the weights into checkpoint
         # Encoder and decoder are keyed using 'encoder_state_dict' and 'decoder_state_dict'
         # If optimizer is given, then save its parameters using key 'optimizer_state_dict'
-        torch.save({
+        checkpoint = {
             'encoder_state_dict': self.encoder.state_dict(),
             'decoder_state_dict': self.decoder.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
             'step': step,
-        }, checkpoint_path)
+        }
+
+        if optimizer is not None:
+            checkpoint['optimizer_state_dict'] = optimizer.state_dict()
+
+        torch.save(checkpoint, checkpoint_path)
 
     def log_summary(self,
                     summary_writer,
