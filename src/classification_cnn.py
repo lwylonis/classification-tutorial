@@ -81,7 +81,7 @@ def train(model,
             print("MODEL:", model)
 
 
-            outputs = model(images)
+            outputs = model.forward(images)
 
             # TODO: Clear gradients so we don't accumlate them from previous batches
             optimizer.zero_grad()
