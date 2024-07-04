@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES=0
 
 python src/train_classification_cnn.py \
 --n_batch 24 \
---dataset mnist \
+--dataset cifar10 \
 --encoder_type vggnet11 \
 --n_epoch 50 \
 --learning_rate 1e-3 \
