@@ -102,7 +102,7 @@ def train(model,
         print('Epoch={}/{}  Loss: {:.3f}'.format(epoch + 1, n_epoch, mean_loss))
 
         # TODO: Save checkpoint after each epoch by using string format to insert epoch number to filename
-        torch.save(model.state_dict(), model_checkpoint_path.format(epoch+1))
+        model.save_model(model_checkpoint_path.format(epoch+1), epoch)
 
     return model
 
