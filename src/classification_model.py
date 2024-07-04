@@ -106,6 +106,7 @@ class ClassificationModel(object):
         print(len(label))
         print("OUTPUT DIM:", output.dim())
         criterion = torch.nn.CrossEntropyLoss()
+        output = output.view(output.size(0), -1)
         loss = criterion(output, label)
 
         loss_info = {
