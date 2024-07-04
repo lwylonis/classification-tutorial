@@ -75,7 +75,7 @@ def train(model,
             labels = labels.to(device)
 
             # TODO: Forward through the network
-            outputs = model.forward(images)
+            outputs = model(images)
 
             # TODO: Clear gradients so we don't accumlate them from previous batches
             optimizer.zero_grad()
