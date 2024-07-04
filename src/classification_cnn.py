@@ -52,9 +52,9 @@ def train(model,
     train_summary_writer = SummaryWriter(event_path + '-train')
 
     # TODO: Move model to device using 'to(...)' function
-    print("MODEL:", model)
+    print("MODEL before .to:", model)
     model = model.to(device)
-    print("MODEL:", model)
+    print("MODEL after .to:", model)
 
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=learning_rate_decay_period, gamma=learning_rate_decay)
 

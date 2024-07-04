@@ -42,6 +42,8 @@ class ClassificationModel(object):
         self.encoder.to(self.device)
         self.decoder.to(self.device)
 
+        
+
     def transform_input(self, images):
         '''
         Transforms input based on model arguments and settings
