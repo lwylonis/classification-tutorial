@@ -75,6 +75,10 @@ def train(model,
             labels = labels.to(device)
 
             # TODO: Forward through the network
+
+            print("MODEL:", model)
+
+
             outputs = model(images)
 
             # TODO: Clear gradients so we don't accumlate them from previous batches
