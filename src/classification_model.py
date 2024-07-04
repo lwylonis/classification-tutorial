@@ -102,6 +102,8 @@ class ClassificationModel(object):
             dict[str, float] : dictionary of loss related tensors
         '''
 
+        print(label.dim())
+        print(len(label))
         criterion = torch.nn.CrossEntropyLoss()
         loss = criterion(output, label)
 
