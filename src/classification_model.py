@@ -42,7 +42,7 @@ class ClassificationModel(object):
         self.encoder.to(self.device)
         self.decoder.to(self.device)
 
-        
+
 
     def transform_input(self, images):
         '''
@@ -148,6 +148,8 @@ class ClassificationModel(object):
         self.device = device
         self.encoder.to(device)
         self.decoder.to(device)
+        return self
+
 
 
         # TODO: Move encoder and decoder to device
