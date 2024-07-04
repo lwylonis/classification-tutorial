@@ -98,6 +98,8 @@ if __name__ == '__main__':
 
     model.train()
 
+    print(model)
+
     # TODO: Train network
     trained_model = classification_cnn.train(model,
                           dataloader_train,
