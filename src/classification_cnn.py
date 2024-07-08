@@ -143,7 +143,8 @@ def evaluate(model, dataloader, class_names, output_path, device):
             labels = labels.to(device)
 
             # TODO: Forward through the network
-            outputs = model(images)
+            outputs = model.forward(images)
+            outputs = outputs.view(outputs.size(0), -1)
 
             # TODO: Take the argmax over the outputs
             _, predicted = torch.max(outputs, 1)

@@ -66,8 +66,8 @@ if __name__ == '__main__':
     Restore weights and evaluate network
     '''
     # TODO: Load network from checkpoint
-    checkpoint = torch.load(args.checkpoint_path)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    #checkpoint = torch.load(args.checkpoint_path)
+    model.restore_model(args.checkpoint_path)
 
     # TODO: Set network to evaluation mode
     model.eval()
