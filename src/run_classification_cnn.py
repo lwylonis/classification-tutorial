@@ -73,5 +73,4 @@ if __name__ == '__main__':
     model.eval()
 
     # TODO: Evaluate network on testing set
-    mean_accuracy = classification_cnn.evaluate(model, dataloader_test, class_names, args.output_path, args.device)
-    print(f'Mean accuracy: {mean_accuracy:.2f}%')
+    classification_cnn.evaluate(model, dataloader_test, class_names, args.output_path, args.device)

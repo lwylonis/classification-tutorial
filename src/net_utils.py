@@ -303,7 +303,7 @@ class ResNetBlock(torch.nn.Module):
         # TODO: Implement ResNet block based on
         # Deep Residual Learning for Image Recognition: https://arxiv.org/pdf/1512.03385.pdf
 
-        self.conv1 = torch.nn.Conv2D(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv1 = torch.nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
 
         self.conv2 = torch.nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
 
@@ -369,7 +369,7 @@ class ResNetBlock(torch.nn.Module):
 
         # TODO: Return activated f(x) + x
 
-        return None
+        return out
 
 class VGGNetBlock(torch.nn.Module):
     '''

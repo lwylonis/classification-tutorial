@@ -133,6 +133,10 @@ def evaluate(model, dataloader, class_names, output_path, device):
     n_correct = 0
     n_sample = 0
 
+    dataset_name = 'CIFAR-10' if len(class_names) == 10 and 'airplane' in class_names else 'MNIST'
+    network_name = model.encoder_type
+
+
     # Make sure we do not backpropagate
     with torch.no_grad():
 
@@ -158,7 +162,7 @@ def evaluate(model, dataloader, class_names, output_path, device):
     # TODO: Compute mean accuracy
     mean_accuracy = n_correct / n_sample * 100.0
 
-    print('Mean accuracy over {} images: {:.3f}%'.format(n_sample, mean_accuracy))
+    print('Mean accuracy over {} images: {:.3f}% ({} on {})'.format(n_sample, mean_accuracy, network_name, dataset_name))
 
     # TODO: Convert the last batch of images back to original shape
     images = images.cpu().numpy()
@@ -198,5 +202,5 @@ def evaluate(model, dataloader, class_names, output_path, device):
         subplot_titles.append(['output={}\nlabel={}'.format(predictions[i], labels_mapped[i]) for i in range(idx_start, idx_end)])
 
     # TODO: Plot images with class names and corresponding groundtruth label in a 5 by 5 grid
-
+    subplot_titles = [title for sublist in subplot_titles for title in sublist]
     log_utils.plot_images(images_display, subplot_titles, output_path)
